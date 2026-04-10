@@ -52,6 +52,12 @@ export async function runMigrations() {
   `);
 
   await pool.query(`
+    ALTER TABLE studentProfiles
+      ADD COLUMN IF NOT EXISTS diagnostic_results JSONB DEFAULT '{}'::jsonb,
+      ADD COLUMN IF NOT EXISTS initial_study_plan JSONB DEFAULT '{}'::jsonb;
+  `);
+
+  await pool.query(`
     CREATE INDEX IF NOT EXISTS idx_student_profiles_user_id ON studentProfiles(user_id);
   `);
 }
