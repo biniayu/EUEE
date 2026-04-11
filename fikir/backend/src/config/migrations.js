@@ -643,6 +643,25 @@ async function migrateChatMessages() {
   `);
 }
 
+/** Phase 11 — question bank favorites */
+async function migrateQuestionBankPhase11() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS question_favorites (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      question_id INTEGER NOT NULL REFERENCES questions(id) ON DELETE CASCADE,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE (user_id, question_id)
+    );
+  `);
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS idx_question_favorites_user ON question_favorites(user_id);
+  `);
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS idx_question_favorites_question ON question_favorites(question_id);
+  `);
+}
+
 /** Phase 10 — study plan generator metadata + task details */
 async function migrateStudyPlanPhase10() {
   await pool.query(`
@@ -667,6 +686,7 @@ export async function runMigrations() {
   await migratePracticeSessionExtensions();
   await migrateChatMessages();
   await migrateStudyPlanPhase10();
+  await migrateQuestionBankPhase11();
   await seedSubjects();
   await seedQuestions();
   await seedLessons();
