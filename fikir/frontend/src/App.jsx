@@ -8,6 +8,7 @@ import Subjects from './pages/Subjects.jsx';
 import SubjectDetail from './pages/SubjectDetail.jsx';
 import LessonDetail from './pages/LessonDetail.jsx';
 import PracticeTest from './pages/PracticeTest.jsx';
+import Analytics from './pages/Analytics.jsx';
 import SubjectsTest from './pages/SubjectsTest.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import { ChatbotProvider } from './components/chatbot/ChatbotContext.jsx';
@@ -74,6 +75,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <PracticeTest />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/analytics"
+          element={
+            <ProtectedRoute>
+              <Analytics />
             </ProtectedRoute>
           }
         />
