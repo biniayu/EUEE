@@ -53,7 +53,10 @@ export async function postChat(req, res) {
     context && typeof context === 'object' && !Array.isArray(context) ? context : {};
   const contextJson = JSON.stringify(ctx);
 
-  const apiKey = process.env.GROQ_API_KEY;
+  const apiKey =
+    process.env.GROQ_API_KEY ||
+    process.env.GROK_API_KEY ||
+    process.env.GROQ_KEY;
   if (!apiKey) {
     return res.status(503).json({
       success: false,
