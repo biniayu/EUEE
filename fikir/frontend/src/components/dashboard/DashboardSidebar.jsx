@@ -5,7 +5,7 @@ const navItems = [
   { to: '/subjects', label: 'Subjects', end: false, alsoActivePrefixes: ['/lessons'] },
   { to: '/practice', label: 'Practice', end: true, alsoActivePrefixes: [] },
   { to: '/analytics', label: 'Analytics', end: true, alsoActivePrefixes: [] },
-  { to: '/dashboard/study-plan', label: 'Study Plan', disabled: true },
+  { to: '/study-plan', label: 'Study Plan', end: true, alsoActivePrefixes: [] },
   { to: '/dashboard/materials', label: 'Materials', disabled: true },
 ];
 

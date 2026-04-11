@@ -643,11 +643,30 @@ async function migrateChatMessages() {
   `);
 }
 
+/** Phase 10 — study plan generator metadata + task details */
+async function migrateStudyPlanPhase10() {
+  await pool.query(`
+    ALTER TABLE study_plans
+      ADD COLUMN IF NOT EXISTS exam_target_date DATE,
+      ADD COLUMN IF NOT EXISTS plan_preferences JSONB DEFAULT '{}'::jsonb,
+      ADD COLUMN IF NOT EXISTS plan_summary TEXT,
+      ADD COLUMN IF NOT EXISTS generated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP;
+  `);
+  await pool.query(`
+    ALTER TABLE study_plan_tasks
+      ADD COLUMN IF NOT EXISTS task_type VARCHAR(32) DEFAULT 'lesson',
+      ADD COLUMN IF NOT EXISTS title VARCHAR(500),
+      ADD COLUMN IF NOT EXISTS sort_order INTEGER DEFAULT 0,
+      ADD COLUMN IF NOT EXISTS completed_at TIMESTAMPTZ;
+  `);
+}
+
 export async function runMigrations() {
   await migrateLegacy();
   await migrateCoreTables();
   await migratePracticeSessionExtensions();
   await migrateChatMessages();
+  await migrateStudyPlanPhase10();
   await seedSubjects();
   await seedQuestions();
   await seedLessons();
