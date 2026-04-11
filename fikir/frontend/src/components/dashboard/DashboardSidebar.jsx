@@ -3,7 +3,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 const navItems = [
   { to: '/dashboard', label: 'Dashboard', end: true, alsoActivePrefixes: [] },
   { to: '/subjects', label: 'Subjects', end: false, alsoActivePrefixes: ['/lessons'] },
-  { to: '/dashboard/practice', label: 'Practice', disabled: true },
+  { to: '/practice', label: 'Practice', end: true, alsoActivePrefixes: [] },
   { to: '/dashboard/analytics', label: 'Analytics', disabled: true },
   { to: '/dashboard/study-plan', label: 'Study Plan', disabled: true },
   { to: '/dashboard/materials', label: 'Materials', disabled: true },

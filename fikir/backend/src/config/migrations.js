@@ -599,6 +599,30 @@ async function seedLessons() {
   }
 }
 
+/** Phase 8 — practice session adaptive fields + topic session type */
+async function migratePracticeSessionExtensions() {
+  await pool.query(`
+    ALTER TABLE practice_sessions
+      ADD COLUMN IF NOT EXISTS session_meta JSONB DEFAULT '{}'::jsonb;
+  `);
+  await pool.query(`
+    ALTER TABLE session_questions
+      ADD COLUMN IF NOT EXISTS sort_order INTEGER DEFAULT 0,
+      ADD COLUMN IF NOT EXISTS selected_answer TEXT,
+      ADD COLUMN IF NOT EXISTS is_correct BOOLEAN,
+      ADD COLUMN IF NOT EXISTS skipped BOOLEAN DEFAULT FALSE,
+      ADD COLUMN IF NOT EXISTS answered_at TIMESTAMP;
+  `);
+  await pool.query(`
+    ALTER TABLE practice_sessions DROP CONSTRAINT IF EXISTS practice_sessions_session_type_check;
+  `).catch(() => {});
+  await pool.query(`
+    ALTER TABLE practice_sessions
+      ADD CONSTRAINT practice_sessions_session_type_check
+      CHECK (session_type IN ('subject', 'topic', 'mock'));
+  `).catch(() => {});
+}
+
 /** Phase 7 — AI tutor chat history */
 async function migrateChatMessages() {
   await pool.query(`
@@ -622,6 +646,7 @@ async function migrateChatMessages() {
 export async function runMigrations() {
   await migrateLegacy();
   await migrateCoreTables();
+  await migratePracticeSessionExtensions();
   await migrateChatMessages();
   await seedSubjects();
   await seedQuestions();

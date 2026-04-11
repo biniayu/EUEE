@@ -190,7 +190,8 @@ export default function TutorChatbot() {
             )}
             {pageContext.type === 'subjects' && 'All subjects'}
             {pageContext.type === 'dashboard' && 'Dashboard'}
-            {!['lesson', 'subject', 'subjects', 'dashboard'].includes(pageContext.type) &&
+            {pageContext.type === 'practice' && 'Practice test'}
+            {!['lesson', 'subject', 'subjects', 'dashboard', 'practice'].includes(pageContext.type) &&
               JSON.stringify(pageContext)}
           </div>
         )}

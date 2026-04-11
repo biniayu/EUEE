@@ -16,6 +16,7 @@ import { createDashboardRouter } from './routes/dashboard.js';
 import { createSubjectsRouter } from './routes/subjects.js';
 import { createLessonsRouter } from './routes/lessons.js';
 import { createChatbotRouter } from './routes/chatbot.js';
+import { createPracticeRouter } from './routes/practice.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -57,6 +58,7 @@ app.use('/api/dashboard', createDashboardRouter());
 app.use('/api/subjects', createSubjectsRouter());
 app.use('/api/lessons', createLessonsRouter());
 app.use('/api/chatbot', createChatbotRouter());
+app.use('/api/practice', createPracticeRouter());
 
 if (NODE_ENV === 'production') {
   const dist = path.join(__dirname, '..', '..', 'frontend', 'dist');
