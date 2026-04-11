@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import NotificationBell from '../notifications/NotificationBell.jsx';
 
 export default function LearningHeader({ title, userName, onLogout, onMenuClick }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -45,7 +46,9 @@ export default function LearningHeader({ title, userName, onLogout, onMenuClick 
           </div>
         </div>
 
-        <div className="relative shrink-0" ref={menuRef}>
+        <div className="flex shrink-0 items-center gap-2">
+          <NotificationBell />
+          <div className="relative" ref={menuRef}>
           <button
             type="button"
             onClick={() => setMenuOpen((o) => !o)}
@@ -78,6 +81,7 @@ export default function LearningHeader({ title, userName, onLogout, onMenuClick 
               </button>
             </div>
           )}
+          </div>
         </div>
       </div>
     </header>

@@ -1,4 +1,5 @@
 import { pool } from '../config/db.js';
+import { runAfterPracticeSessionComplete } from '../services/notificationService.js';
 
 const SUBJECT_NAMES = ['Mathematics', 'Physics', 'Chemistry', 'Biology', 'English', 'SAT'];
 const DIFF_ORDER = ['easy', 'medium', 'hard'];
@@ -599,6 +600,12 @@ export async function completePractice(req, res) {
     await updateWeakAreasAndAi(client, userId, results);
 
     await client.query('COMMIT');
+
+    setImmediate(() => {
+      runAfterPracticeSessionComplete(userId, results).catch((e) =>
+        console.error('runAfterPracticeSessionComplete:', e?.message || e)
+      );
+    });
 
     return res.json({ success: true, results });
   } catch (err) {

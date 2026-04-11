@@ -12,6 +12,7 @@ import Analytics from './pages/Analytics.jsx';
 import StudyPlan from './pages/StudyPlan.jsx';
 import QuestionBank from './pages/QuestionBank.jsx';
 import PastPapers from './pages/PastPapers.jsx';
+import Notifications from './pages/Notifications.jsx';
 import SubjectsTest from './pages/SubjectsTest.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import { ChatbotProvider } from './components/chatbot/ChatbotContext.jsx';
@@ -110,6 +111,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <PastPapers />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/notifications"
+          element={
+            <ProtectedRoute>
+              <Notifications />
             </ProtectedRoute>
           }
         />

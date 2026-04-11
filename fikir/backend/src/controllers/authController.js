@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { pool } from '../config/db.js';
 import { setAuthCookie, clearAuthCookie } from '../utils/cookies.js';
+import { runPostLoginNotifications } from '../services/notificationService.js';
 
 export function createAuthController({ jwtSecret, jwtExpiresIn, nodeEnv }) {
   return {
@@ -107,6 +108,12 @@ export function createAuthController({ jwtSecret, jwtExpiresIn, nodeEnv }) {
         });
 
         setAuthCookie(res, token, nodeEnv);
+
+        setImmediate(() => {
+          runPostLoginNotifications(user.id).catch((e) =>
+            console.error('runPostLoginNotifications:', e?.message || e)
+          );
+        });
 
         return res.json({
           success: true,

@@ -8,6 +8,7 @@ const navItems = [
   { to: '/study-plan', label: 'Study Plan', end: true, alsoActivePrefixes: [] },
   { to: '/question-bank', label: 'Question bank', end: true, alsoActivePrefixes: [] },
   { to: '/past-papers', label: 'Past papers', end: true, alsoActivePrefixes: [] },
+  { to: '/notifications', label: 'Notifications', end: true, alsoActivePrefixes: [] },
   { to: '/dashboard/materials', label: 'Materials', disabled: true },
 ];
 

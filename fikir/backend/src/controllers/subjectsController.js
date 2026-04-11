@@ -1,4 +1,5 @@
 import { pool } from '../config/db.js';
+import { runAfterLessonComplete } from '../services/notificationService.js';
 
 const SUBJECT_ORDER = ['Mathematics', 'Physics', 'Chemistry', 'Biology', 'English', 'SAT'];
 
@@ -264,6 +265,12 @@ export async function completeLesson(req, res) {
       return res.status(404).json({ success: false, error: 'Lesson not found.' });
     }
 
+    const prev = await pool.query(
+      `SELECT completed FROM lesson_progress WHERE user_id = $1 AND lesson_id = $2 LIMIT 1`,
+      [userId, lessonId]
+    );
+    const alreadyDone = prev.rows[0]?.completed === true;
+
     const raw = req.body?.timeSpentSeconds;
     const extra = Math.min(Math.max(0, Number(raw) || 0), 86400);
 
@@ -282,6 +289,30 @@ export async function completeLesson(req, res) {
     );
 
     const r = result.rows[0];
+
+    if (!alreadyDone) {
+      const meta = await pool.query(
+        `
+          SELECT l.title, s.name AS subject_name
+          FROM lessons l
+          INNER JOIN subjects s ON s.id = l.subject_id
+          WHERE l.id = $1
+          LIMIT 1
+        `,
+        [lessonId]
+      );
+      const m = meta.rows[0];
+      if (m) {
+        setImmediate(() => {
+          runAfterLessonComplete(userId, {
+            lessonTitle: m.title,
+            subjectName: m.subject_name,
+            lessonId,
+          }).catch((e) => console.error('runAfterLessonComplete:', e?.message || e));
+        });
+      }
+    }
+
     return res.json({
       success: true,
       message: 'Lesson marked complete. Great work!',

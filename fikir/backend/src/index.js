@@ -20,6 +20,7 @@ import { createPracticeRouter } from './routes/practice.js';
 import { createAnalyticsRouter } from './routes/analytics.js';
 import { createStudyPlanRouter } from './routes/studyplan.js';
 import { createQuestionsRouter } from './routes/questions.js';
+import { createNotificationsRouter } from './routes/notifications.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -65,6 +66,7 @@ app.use('/api/practice', createPracticeRouter());
 app.use('/api/analytics', createAnalyticsRouter());
 app.use('/api/studyplan', createStudyPlanRouter());
 app.use('/api/questions', createQuestionsRouter());
+app.use('/api/notifications', createNotificationsRouter());
 
 if (NODE_ENV === 'production') {
   const dist = path.join(__dirname, '..', '..', 'frontend', 'dist');

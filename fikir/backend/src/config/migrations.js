@@ -643,6 +643,19 @@ async function migrateChatMessages() {
   `);
 }
 
+/** Phase 12 — notification dedupe keys */
+async function migrateNotificationsPhase12() {
+  await pool.query(`
+    ALTER TABLE notifications
+      ADD COLUMN IF NOT EXISTS dedupe_key VARCHAR(160);
+  `);
+  await pool.query(`
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_notifications_user_dedupe_key
+    ON notifications (user_id, dedupe_key)
+    WHERE dedupe_key IS NOT NULL;
+  `);
+}
+
 /** Phase 11 — question bank favorites */
 async function migrateQuestionBankPhase11() {
   await pool.query(`
@@ -687,6 +700,7 @@ export async function runMigrations() {
   await migrateChatMessages();
   await migrateStudyPlanPhase10();
   await migrateQuestionBankPhase11();
+  await migrateNotificationsPhase12();
   await seedSubjects();
   await seedQuestions();
   await seedLessons();
