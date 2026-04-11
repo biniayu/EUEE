@@ -13,6 +13,8 @@ import { createAuthRouter } from './routes/auth.js';
 import { createOnboardingRouter } from './routes/onboarding.js';
 import { createCoreRouter } from './routes/core.js';
 import { createDashboardRouter } from './routes/dashboard.js';
+import { createSubjectsRouter } from './routes/subjects.js';
+import { createLessonsRouter } from './routes/lessons.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -51,6 +53,8 @@ app.use('/api/auth', createAuthRouter(authController));
 app.use('/api/onboarding', createOnboardingRouter(onboardingController));
 app.use('/api/core', createCoreRouter(coreController));
 app.use('/api/dashboard', createDashboardRouter());
+app.use('/api/subjects', createSubjectsRouter());
+app.use('/api/lessons', createLessonsRouter());
 
 if (NODE_ENV === 'production') {
   const dist = path.join(__dirname, '..', '..', 'frontend', 'dist');

@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 function scoreTone(pct) {
   if (pct == null || Number.isNaN(pct)) return 'text-neutral-500';
   if (pct >= 65) return 'text-emerald-600';
@@ -10,7 +12,7 @@ function SubjectCard({ subject }) {
   const bar = subject.progressPercent ?? 0;
 
   return (
-    <article className="group flex flex-col rounded-2xl border border-neutral-200/80 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-brand-emerald/30 hover:shadow-md">
+    <article className="group flex h-full flex-col rounded-2xl border border-neutral-200/80 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-brand-emerald/30 hover:shadow-md">
       <div className="flex items-start justify-between gap-2">
         <h3 className="text-lg font-bold text-deep-blue">{subject.subjectName}</h3>
         <span
@@ -47,6 +49,14 @@ function SubjectCard({ subject }) {
           />
         </div>
       </div>
+      {subject.subjectId != null && (
+        <Link
+          to={`/subjects/${subject.subjectId}`}
+          className="mt-4 inline-flex w-full items-center justify-center rounded-full border border-deep-blue/20 bg-deep-blue/5 py-2.5 text-sm font-semibold text-deep-blue transition hover:bg-deep-blue hover:text-white"
+        >
+          Open subject
+        </Link>
+      )}
     </article>
   );
 }
@@ -83,17 +93,23 @@ export default function SubjectProgressGrid({ subjects, loading, error, onRetry 
 
   return (
     <section>
-      <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h3 className="text-xl font-bold text-deep-blue">Subject progress</h3>
           <p className="text-sm text-neutral-600">
             Natural Science core + SAT — track lessons and practice performance.
           </p>
         </div>
+        <Link
+          to="/subjects"
+          className="shrink-0 text-sm font-semibold text-brand-emerald transition hover:text-deep-blue"
+        >
+          View all subjects →
+        </Link>
       </div>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {(subjects || []).map((s) => (
-          <SubjectCard key={s.subjectId || s.subjectName} subject={s} />
+          <SubjectCard key={s.subjectId ?? s.subjectName} subject={s} />
         ))}
       </div>
     </section>

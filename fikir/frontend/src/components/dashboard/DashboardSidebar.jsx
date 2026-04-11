@@ -1,15 +1,16 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 
 const navItems = [
-  { to: '/dashboard', label: 'Dashboard', end: true },
-  { to: '/dashboard/subjects', label: 'Subjects', disabled: true },
+  { to: '/dashboard', label: 'Dashboard', end: true, alsoActivePrefixes: [] },
+  { to: '/subjects', label: 'Subjects', end: false, alsoActivePrefixes: ['/lessons'] },
   { to: '/dashboard/practice', label: 'Practice', disabled: true },
   { to: '/dashboard/analytics', label: 'Analytics', disabled: true },
   { to: '/dashboard/study-plan', label: 'Study Plan', disabled: true },
   { to: '/dashboard/materials', label: 'Materials', disabled: true },
 ];
 
-function NavItem({ to, label, end, disabled, onNavigate }) {
+function NavItem({ to, label, end, disabled, onNavigate, alsoActivePrefixes = [] }) {
+  const location = useLocation();
   if (disabled) {
     return (
       <span
@@ -21,18 +22,20 @@ function NavItem({ to, label, end, disabled, onNavigate }) {
       </span>
     );
   }
+  const prefixActive = alsoActivePrefixes.some((p) => location.pathname.startsWith(p));
   return (
     <NavLink
       to={to}
       end={end}
       onClick={onNavigate}
-      className={({ isActive }) =>
-        `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all duration-200 ${
-          isActive
+      className={({ isActive }) => {
+        const active = isActive || prefixActive;
+        return `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-all duration-200 ${
+          active
             ? 'bg-deep-blue text-white shadow-md shadow-deep-blue/20'
             : 'text-neutral-600 hover:bg-white hover:text-deep-blue'
-        }`
-      }
+        }`;
+      }}
     >
       <span
         className="h-1.5 w-1.5 rounded-full bg-current opacity-80"

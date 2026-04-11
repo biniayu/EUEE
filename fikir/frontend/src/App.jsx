@@ -4,6 +4,9 @@ import Login from './pages/Login.jsx';
 import Signup from './pages/Signup.jsx';
 import Onboarding from './pages/Onboarding.jsx';
 import Dashboard from './pages/Dashboard.jsx';
+import Subjects from './pages/Subjects.jsx';
+import SubjectDetail from './pages/SubjectDetail.jsx';
+import LessonDetail from './pages/LessonDetail.jsx';
 import SubjectsTest from './pages/SubjectsTest.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 
@@ -35,6 +38,30 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/subjects"
+          element={
+            <ProtectedRoute>
+              <Subjects />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/subjects/:subjectId"
+          element={
+            <ProtectedRoute>
+              <SubjectDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/lessons/:lessonId"
+          element={
+            <ProtectedRoute>
+              <LessonDetail />
             </ProtectedRoute>
           }
         />

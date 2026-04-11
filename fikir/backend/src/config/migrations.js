@@ -71,6 +71,12 @@ async function migrateCoreTables() {
   `);
 
   await pool.query(`
+    ALTER TABLE lessons
+      ADD COLUMN IF NOT EXISTS duration_minutes INTEGER DEFAULT 20,
+      ADD COLUMN IF NOT EXISTS sort_order INTEGER DEFAULT 0;
+  `);
+
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS lesson_progress (
       id SERIAL PRIMARY KEY,
       user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -370,9 +376,233 @@ async function seedQuestions() {
   }
 }
 
+/** Sample lessons for Subject & Lesson modules (Phase 6) */
+async function seedLessons() {
+  const count = await pool.query('SELECT COUNT(*)::int AS c FROM lessons');
+  if (count.rows[0].c > 0) return;
+
+  const subjectRows = await pool.query(`SELECT id, name FROM subjects ORDER BY id`);
+  const byName = Object.fromEntries(subjectRows.rows.map((r) => [r.name, r.id]));
+
+  const templates = [
+    {
+      names: ['Mathematics'],
+      lessons: [
+        {
+          title: 'Linear equations refresher',
+          content_type: 'video',
+          content_url: 'https://www.youtube.com/watch?v=9DdtzGpsq3k',
+          text_content: null,
+          duration_minutes: 12,
+          sort_order: 1,
+        },
+        {
+          title: 'Percentages and ratios',
+          content_type: 'text',
+          content_url: null,
+          text_content: `## Percentages\n\nA **percentage** is a number out of 100.\n\n- To find 15% of 200: multiply 200 × 0.15 = **30**.\n\n- To increase a value by 10%: multiply by **1.10**.\n\n### Practice tip\n\nAlways check whether the question asks for the *new value* or the *amount of change*.`,
+          duration_minutes: 18,
+          sort_order: 2,
+        },
+        {
+          title: 'Geometry essentials',
+          content_type: 'text',
+          content_url: null,
+          text_content: `## Triangles\n\n- Interior angles sum to **180°**.\n- Area of a triangle: **½ × base × height**.\n\n## Circles\n\n- Circumference: **2πr**\n- Area: **πr²**\n\nWork one diagram-based problem each day to build speed for EUEE.`,
+          duration_minutes: 20,
+          sort_order: 3,
+        },
+      ],
+    },
+    {
+      names: ['Physics'],
+      lessons: [
+        {
+          title: 'Vectors and motion basics',
+          content_type: 'video',
+          content_url: 'https://www.youtube.com/watch?v=FOxVMVrFCzI',
+          text_content: null,
+          duration_minutes: 14,
+          sort_order: 1,
+        },
+        {
+          title: 'Newton’s laws in exam problems',
+          content_type: 'text',
+          content_url: null,
+          text_content: `## First law\n\nObjects stay at rest or constant velocity unless a **net force** acts.\n\n## Second law\n\n**F = ma** — force equals mass times acceleration.\n\n## Third law\n\nFor every force there is an equal and opposite reaction.\n\nWhen solving, draw a **free-body diagram** before writing equations.`,
+          duration_minutes: 22,
+          sort_order: 2,
+        },
+        {
+          title: 'Energy and work',
+          content_type: 'text',
+          content_url: null,
+          text_content: `## Work\n\n**W = Fd cos θ** when force and displacement align partially.\n\n## Kinetic energy\n\n**KE = ½mv²**\n\nConservation of energy is a favorite EUEE theme — track energy before and after.`,
+          duration_minutes: 20,
+          sort_order: 3,
+        },
+      ],
+    },
+    {
+      names: ['Chemistry'],
+      lessons: [
+        {
+          title: 'Atomic structure overview',
+          content_type: 'video',
+          content_url: 'https://www.youtube.com/watch?v=hQO1cD9_FbY',
+          text_content: null,
+          duration_minutes: 11,
+          sort_order: 1,
+        },
+        {
+          title: 'Acids, bases, and pH',
+          content_type: 'text',
+          content_url: null,
+          text_content: `## pH scale\n\n- **pH < 7** acidic\n- **pH = 7** neutral\n- **pH > 7** basic\n\n## Common exam traps\n\nDistinguish **strong** vs **weak** electrolytes and remember indicator colors if your syllabus includes them.`,
+          duration_minutes: 16,
+          sort_order: 2,
+        },
+        {
+          title: 'Organic basics: alkanes',
+          content_type: 'text',
+          content_url: null,
+          text_content: `## Alkanes\n\nGeneral formula **CₙH₂ₙ₊₂** — saturated hydrocarbons.\n\nName chains, branches, and practice **IUPAC** style when your curriculum requires it.`,
+          duration_minutes: 18,
+          sort_order: 3,
+        },
+      ],
+    },
+    {
+      names: ['Biology'],
+      lessons: [
+        {
+          title: 'Cell structure tour',
+          content_type: 'video',
+          content_url: 'https://www.youtube.com/watch?v=8IlzKri08kk',
+          text_content: null,
+          duration_minutes: 13,
+          sort_order: 1,
+        },
+        {
+          title: 'Photosynthesis and respiration',
+          content_type: 'text',
+          content_url: null,
+          text_content: `## Photosynthesis\n\nChloroplasts convert light energy into chemical energy (glucose).\n\n## Respiration\n\nMitochondria release usable energy from glucose.\n\nCompare **inputs/outputs** in exam short answers.`,
+          duration_minutes: 19,
+          sort_order: 2,
+        },
+        {
+          title: 'Genetics vocabulary',
+          content_type: 'text',
+          content_url: null,
+          text_content: `## Core terms\n\n- **DNA** stores hereditary information.\n- **Gene** — segment that codes for a trait.\n- **Allele** — variant of a gene.\n\nUse Punnett squares carefully and label generations (P, F1, F2) when asked.`,
+          duration_minutes: 17,
+          sort_order: 3,
+        },
+      ],
+    },
+    {
+      names: ['English'],
+      lessons: [
+        {
+          title: 'Reading comprehension strategy',
+          content_type: 'video',
+          content_url: 'https://www.youtube.com/watch?v=6ZAiXxjwmpA',
+          text_content: null,
+          duration_minutes: 10,
+          sort_order: 1,
+        },
+        {
+          title: 'Grammar: subject–verb agreement',
+          content_type: 'text',
+          content_url: null,
+          text_content: `## Agreement\n\nSingular subjects need **singular** verbs.\n\n- *She **runs** every morning.*\n- *The data **are**…* vs *The dataset **is**…* — watch collective nouns.\n\nUnderline the **real subject** when sentences begin with *There* or *Here*.`,
+          duration_minutes: 15,
+          sort_order: 2,
+        },
+        {
+          title: 'Vocabulary in context',
+          content_type: 'text',
+          content_url: null,
+          text_content: `## Strategy\n\nRead the **sentence before and after** the blank.\n\nEliminate answers that change the tone (formal vs informal).\n\nKeep a small notebook of **confusable pairs** (affect/effect, accept/except).`,
+          duration_minutes: 14,
+          sort_order: 3,
+        },
+      ],
+    },
+    {
+      names: ['SAT'],
+      lessons: [
+        {
+          title: 'Logical reasoning patterns',
+          content_type: 'video',
+          content_url: 'https://www.youtube.com/watch?v=ENgM6z7gi8U',
+          text_content: null,
+          duration_minutes: 12,
+          sort_order: 1,
+        },
+        {
+          title: 'Number sense shortcuts',
+          content_type: 'text',
+          content_url: null,
+          text_content: `## Compare decimals\n\nPad with zeros: **0.909** vs **0.9** → **0.909** vs **0.900**.\n\n## Percent change\n\n**(new − old) / old × 100%**.\n\nDouble-check whether the question asks for *increase* or *final value*.`,
+          duration_minutes: 16,
+          sort_order: 2,
+        },
+        {
+          title: 'Reading charts and tables',
+          content_type: 'text',
+          content_url: null,
+          text_content: `## Exam habit\n\nRead **titles, axes, and units** before answering.\n\nMark the question’s keyword and find the smallest table region that answers it — saves time under pressure.`,
+          duration_minutes: 14,
+          sort_order: 3,
+        },
+      ],
+    },
+  ];
+
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    for (const block of templates) {
+      for (const subName of block.names) {
+        const sid = byName[subName];
+        if (!sid) continue;
+        for (const L of block.lessons) {
+          await client.query(
+            `
+              INSERT INTO lessons (
+                subject_id, title, content_type, content_url, text_content,
+                difficulty, duration_minutes, sort_order
+              )
+              VALUES ($1, $2, $3, $4, $5, 'medium', $6, $7)
+            `,
+            [
+              sid,
+              L.title,
+              L.content_type,
+              L.content_url,
+              L.text_content,
+              L.duration_minutes,
+              L.sort_order,
+            ]
+          );
+        }
+      }
+    }
+    await client.query('COMMIT');
+  } catch (e) {
+    await client.query('ROLLBACK');
+    throw e;
+  } finally {
+    client.release();
+  }
+}
+
 export async function runMigrations() {
   await migrateLegacy();
   await migrateCoreTables();
   await seedSubjects();
   await seedQuestions();
+  await seedLessons();
 }
