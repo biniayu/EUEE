@@ -12,6 +12,7 @@ import * as coreController from './controllers/coreController.js';
 import { createAuthRouter } from './routes/auth.js';
 import { createOnboardingRouter } from './routes/onboarding.js';
 import { createCoreRouter } from './routes/core.js';
+import { createDashboardRouter } from './routes/dashboard.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -49,6 +50,7 @@ const onboardingController = createOnboardingController();
 app.use('/api/auth', createAuthRouter(authController));
 app.use('/api/onboarding', createOnboardingRouter(onboardingController));
 app.use('/api/core', createCoreRouter(coreController));
+app.use('/api/dashboard', createDashboardRouter());
 
 if (NODE_ENV === 'production') {
   const dist = path.join(__dirname, '..', '..', 'frontend', 'dist');

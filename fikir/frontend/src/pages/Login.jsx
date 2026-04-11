@@ -35,7 +35,15 @@ export default function Login() {
       return;
     }
     setMessage(result.message || 'Login successful!');
-    setTimeout(() => navigate('/onboarding'), 700);
+    try {
+      const meRes = await fetch('/api/auth/me', { credentials: 'include' });
+      const meData = await meRes.json().catch(() => ({}));
+      const status = meData.user?.onboardingStatus;
+      const next = status === 'completed' ? '/dashboard' : '/onboarding';
+      setTimeout(() => navigate(next), 500);
+    } catch {
+      setTimeout(() => navigate('/onboarding'), 500);
+    }
   }
 
   return (
@@ -146,7 +154,9 @@ export default function Login() {
               {message}
             </p>
           )}
-          {message && <p className="text-center text-sm text-neutral-500">Redirecting to onboarding...</p>}
+          {message && (
+            <p className="text-center text-sm text-neutral-500">Redirecting to your workspace...</p>
+          )}
 
           <button
             type="submit"
