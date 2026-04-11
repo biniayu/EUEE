@@ -599,9 +599,30 @@ async function seedLessons() {
   }
 }
 
+/** Phase 7 — AI tutor chat history */
+async function migrateChatMessages() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS chat_messages (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      message TEXT NOT NULL,
+      is_ai BOOLEAN NOT NULL DEFAULT FALSE,
+      context JSONB DEFAULT '{}'::jsonb,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `);
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS idx_chat_messages_user_id ON chat_messages(user_id);
+  `);
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS idx_chat_messages_user_created ON chat_messages(user_id, created_at);
+  `);
+}
+
 export async function runMigrations() {
   await migrateLegacy();
   await migrateCoreTables();
+  await migrateChatMessages();
   await seedSubjects();
   await seedQuestions();
   await seedLessons();

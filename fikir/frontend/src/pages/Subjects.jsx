@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import LearningLayout from '../components/learning/LearningLayout.jsx';
+import { useChatbotPageContext } from '../components/chatbot/ChatbotContext.jsx';
 
 async function fetchJson(path) {
   const res = await fetch(path, { credentials: 'include' });
@@ -10,6 +11,13 @@ async function fetchJson(path) {
 }
 
 export default function Subjects() {
+  const { setPageContext } = useChatbotPageContext();
+
+  useEffect(() => {
+    setPageContext({ type: 'subjects' });
+    return () => setPageContext({});
+  }, [setPageContext]);
+
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

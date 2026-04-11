@@ -9,10 +9,13 @@ import SubjectDetail from './pages/SubjectDetail.jsx';
 import LessonDetail from './pages/LessonDetail.jsx';
 import SubjectsTest from './pages/SubjectsTest.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
+import { ChatbotProvider } from './components/chatbot/ChatbotContext.jsx';
+import TutorChatbot from './components/chatbot/TutorChatbot.jsx';
 
 export default function App() {
   return (
     <BrowserRouter>
+      <ChatbotProvider>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
@@ -66,6 +69,8 @@ export default function App() {
           }
         />
       </Routes>
+      <TutorChatbot />
+      </ChatbotProvider>
     </BrowserRouter>
   );
 }

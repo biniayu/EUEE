@@ -7,6 +7,7 @@ import SubjectProgressGrid from '../components/dashboard/SubjectProgressGrid.jsx
 import TodayTasksSection from '../components/dashboard/TodayTasksSection.jsx';
 import AIRecommendationsSection from '../components/dashboard/AIRecommendationsSection.jsx';
 import QuickStatsSection from '../components/dashboard/QuickStatsSection.jsx';
+import { useChatbotPageContext } from '../components/chatbot/ChatbotContext.jsx';
 
 async function fetchJson(path) {
   const res = await fetch(path, { credentials: 'include' });
@@ -21,6 +22,12 @@ async function fetchJson(path) {
 export default function Dashboard() {
   const { logout, fetchMe, user } = useAuth();
   const navigate = useNavigate();
+  const { setPageContext } = useChatbotPageContext();
+
+  useEffect(() => {
+    setPageContext({ type: 'dashboard' });
+    return () => setPageContext({});
+  }, [setPageContext]);
 
   const [overview, setOverview] = useState(null);
   const [overviewLoading, setOverviewLoading] = useState(true);

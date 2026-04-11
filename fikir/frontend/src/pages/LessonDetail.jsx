@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import LearningLayout from '../components/learning/LearningLayout.jsx';
 import VideoEmbed from '../components/learning/VideoEmbed.jsx';
 import LessonText from '../components/learning/LessonText.jsx';
+import { useChatbotPageContext } from '../components/chatbot/ChatbotContext.jsx';
 
 async function fetchJson(path, options) {
   const res = await fetch(path, { credentials: 'include', ...options });
@@ -72,6 +73,7 @@ function PracticeBlock({ question }) {
 
 export default function LessonDetail() {
   const { lessonId } = useParams();
+  const { setPageContext } = useChatbotPageContext();
   const startedAt = useRef(Date.now());
   const [payload, setPayload] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -105,6 +107,19 @@ export default function LessonDetail() {
   const questions = payload?.practiceQuestions || [];
 
   const title = useMemo(() => lesson?.title || 'Lesson', [lesson]);
+
+  useEffect(() => {
+    if (!lesson) return undefined;
+    setPageContext({
+      type: 'lesson',
+      lessonId: lesson.id,
+      lessonTitle: lesson.title,
+      subjectId: lesson.subjectId,
+      subjectName: lesson.subjectName,
+      contentType: lesson.contentType,
+    });
+    return () => setPageContext({});
+  }, [lesson, setPageContext]);
 
   async function markComplete() {
     setCompleteLoading(true);

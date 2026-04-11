@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import LearningLayout from '../components/learning/LearningLayout.jsx';
+import { useChatbotPageContext } from '../components/chatbot/ChatbotContext.jsx';
 
 async function fetchJson(path) {
   const res = await fetch(path, { credentials: 'include' });
@@ -24,6 +25,7 @@ function TypeBadge({ type }) {
 
 export default function SubjectDetail() {
   const { subjectId } = useParams();
+  const { setPageContext } = useChatbotPageContext();
   const [meta, setMeta] = useState(null);
   const [lessons, setLessons] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -46,6 +48,16 @@ export default function SubjectDetail() {
   useEffect(() => {
     load();
   }, [load]);
+
+  useEffect(() => {
+    if (!meta) return undefined;
+    setPageContext({
+      type: 'subject',
+      subjectId: meta.id,
+      subjectName: meta.name,
+    });
+    return () => setPageContext({});
+  }, [meta, setPageContext]);
 
   const continueId = meta?.nextLessonId || lessons.find((l) => !l.completed)?.id;
 
