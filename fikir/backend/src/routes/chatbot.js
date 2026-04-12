@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import { requireAuth } from '../middleware/authMiddleware.js';
+import { chatbotLimiter } from '../middleware/rateLimits.js';
+import { chatbotPostRules, handleValidation } from '../middleware/validate.js';
 import * as chatbotController from '../controllers/chatbotController.js';
 
 export function createChatbotRouter() {
@@ -29,6 +31,8 @@ export function createChatbotRouter() {
   });
   router.use(requireAuth);
   router.get('/messages', (req, res) => chatbotController.listMessages(req, res));
-  router.post('/', (req, res) => chatbotController.postChat(req, res));
+  router.post('/', chatbotLimiter, chatbotPostRules, handleValidation, (req, res) =>
+    chatbotController.postChat(req, res)
+  );
   return router;
 }

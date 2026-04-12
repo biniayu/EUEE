@@ -1,9 +1,12 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import LearningLayout from '../components/learning/LearningLayout.jsx';
-import VideoEmbed from '../components/learning/VideoEmbed.jsx';
 import LessonText from '../components/learning/LessonText.jsx';
 import { useChatbotPageContext } from '../components/chatbot/ChatbotContext.jsx';
+import Spinner from '../components/ui/Spinner.jsx';
+
+/* Phase 14: Defer iframe/video embed chunk until video lessons load. */
+const VideoEmbed = lazy(() => import('../components/learning/VideoEmbed.jsx'));
 
 async function fetchJson(path, options) {
   const res = await fetch(path, { credentials: 'include', ...options });
@@ -213,7 +216,19 @@ export default function LessonDetail() {
             </header>
 
             {lesson.contentType === 'video' ? (
-              <VideoEmbed url={lesson.contentUrl} title={lesson.title} />
+              <Suspense
+                fallback={
+                  <div
+                    className="flex min-h-[200px] items-center justify-center rounded-3xl border border-neutral-200 bg-neutral-50"
+                    role="status"
+                    aria-label="Loading video"
+                  >
+                    <Spinner size="lg" label="Loading video player" />
+                  </div>
+                }
+              >
+                <VideoEmbed url={lesson.contentUrl} title={lesson.title} />
+              </Suspense>
             ) : (
               <div className="rounded-3xl border border-neutral-200/80 bg-white p-6 shadow-sm sm:p-8">
                 <LessonText text={lesson.textContent} />

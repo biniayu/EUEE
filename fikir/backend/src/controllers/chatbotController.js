@@ -7,6 +7,8 @@ const GROQ_CHAT_URL = 'https://api.groq.com/openai/v1/chat/completions';
 const MAX_USER_MESSAGE_LEN = 8000;
 const HISTORY_LIMIT = 20;
 
+// TEST: postChat — validation, GROQ 503 when key missing, message persistence, history cap.
+
 function buildGroqMessages(systemWithContext, historyRows) {
   const messages = [{ role: 'system', content: systemWithContext }];
   for (const row of historyRows) {

@@ -5,6 +5,10 @@ import LearningLayout from '../components/learning/LearningLayout.jsx';
 import UploadZone from '../components/resources/UploadZone.jsx';
 import MaterialsList from '../components/resources/MaterialsList.jsx';
 import ReferenceSection from '../components/resources/ReferenceSection.jsx';
+import ApiErrorAlert from '../components/ui/ApiErrorAlert.jsx';
+import Skeleton from '../components/ui/Skeleton.jsx';
+import { useToast } from '../components/ui/ToastProvider.jsx';
+import { linkBack } from '../components/ui/designTokens.js';
 
 async function fetchJson(path) {
   const res = await fetch(path, { credentials: 'include' });
@@ -14,6 +18,7 @@ async function fetchJson(path) {
 }
 
 export default function Resources() {
+  const toast = useToast();
   const { setPageContext } = useChatbotPageContext();
   const [subjects, setSubjects] = useState([]);
   const [uploadSubjectId, setUploadSubjectId] = useState('');
@@ -62,7 +67,7 @@ export default function Resources() {
     <LearningLayout title="Materials & resources">
       <div className="mx-auto max-w-5xl space-y-10">
         <div>
-          <Link to="/dashboard" className="text-sm font-semibold text-brand-emerald hover:text-deep-blue">
+          <Link to="/dashboard" className={linkBack}>
             ← Dashboard
           </Link>
           <p className="mt-2 max-w-2xl text-sm text-neutral-600">
@@ -92,15 +97,16 @@ export default function Resources() {
             <UploadZone
               key={uploadSubjectId || 'none'}
               subjectId={uploadSubjectId}
-              onUploaded={loadResources}
+              onUploaded={() => {
+                loadResources();
+                toast.show('File uploaded successfully.', 'success');
+              }}
               disabled={loading}
             />
           </div>
 
-          {loading && <div className="h-32 animate-pulse rounded-2xl bg-neutral-100" />}
-          {error && (
-            <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{error}</div>
-          )}
+          {loading && <Skeleton height="h-32" className="w-full" />}
+          <ApiErrorAlert title="Could not load materials" message={error} onRetry={loadResources} />
           {!loading && (
             <MaterialsList
               materials={uploads}

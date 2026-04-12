@@ -1,3 +1,6 @@
+import { memo } from 'react';
+import { btnPrimary } from '../ui/designTokens.js';
+
 function difficultyBadge(diff) {
   const d = (diff || 'medium').toLowerCase();
   if (d === 'easy') return 'bg-brand-emerald/15 text-emerald-800 ring-1 ring-brand-emerald/30';
@@ -5,7 +8,7 @@ function difficultyBadge(diff) {
   return 'bg-deep-blue/10 text-deep-blue ring-1 ring-deep-blue/20';
 }
 
-export default function QuestionCard({ q, viewMode, onView }) {
+function QuestionCard({ q, viewMode, onView }) {
   const isList = viewMode === 'list';
 
   return (
@@ -30,14 +33,12 @@ export default function QuestionCard({ q, viewMode, onView }) {
         <p className="mt-1 text-xs text-neutral-500">Topic: {q.topic}</p>
       </div>
       <div className={`flex shrink-0 items-center ${isList ? '' : 'mt-4 justify-end'}`}>
-        <button
-          type="button"
-          onClick={() => onView(q.id)}
-          className="rounded-full bg-deep-blue px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-[#002a52]"
-        >
+        <button type="button" onClick={() => onView(q.id)} className={`${btnPrimary} px-4 py-2 text-xs`}>
           View
         </button>
       </div>
     </article>
   );
 }
+
+export default memo(QuestionCard);

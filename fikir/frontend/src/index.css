@@ -16,3 +16,33 @@ html {
 body {
   font-family: var(--font-sans);
 }
+
+/* Phase 14: Focus visibility (keyboard + WCAG), light-mode first; dark via prefers-color-scheme when added later */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brand-emerald);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  /* Placeholder for future dark theme — keeps tokens centralized */
+  :root {
+    color-scheme: light;
+  }
+}

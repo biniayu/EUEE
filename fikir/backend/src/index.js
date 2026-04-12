@@ -22,6 +22,7 @@ import { createStudyPlanRouter } from './routes/studyplan.js';
 import { createQuestionsRouter } from './routes/questions.js';
 import { createNotificationsRouter } from './routes/notifications.js';
 import { createResourcesRouter } from './routes/resources.js';
+import { requestLogger } from './middleware/logger.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -48,6 +49,7 @@ app.use(
 );
 app.use(express.json());
 app.use(cookieParser());
+app.use(requestLogger);
 
 const authController = createAuthController({
   jwtSecret: JWT_SECRET,
@@ -69,6 +71,24 @@ app.use('/api/studyplan', createStudyPlanRouter());
 app.use('/api/questions', createQuestionsRouter());
 app.use('/api/notifications', createNotificationsRouter());
 app.use('/api/resources', createResourcesRouter());
+
+app.use((req, res, next) => {
+  if (req.path.startsWith('/api')) {
+    return res.status(404).json({ success: false, error: 'API route not found.' });
+  }
+  return next();
+});
+
+app.use((err, req, res, next) => {
+  if (res.headersSent) return next(err);
+  console.error('[Fikir API error]', req.method, req.originalUrl, err?.stack || err?.message || err);
+  const status = Number(err?.status || err?.statusCode) || 500;
+  const safeMessage =
+    NODE_ENV === 'production' && status >= 500
+      ? 'Something went wrong. Please try again later.'
+      : err?.message || 'Server error';
+  res.status(status >= 400 ? status : 500).json({ success: false, error: safeMessage });
+});
 
 if (NODE_ENV === 'production') {
   const dist = path.join(__dirname, '..', '..', 'frontend', 'dist');

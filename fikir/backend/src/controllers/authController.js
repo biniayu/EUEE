@@ -4,6 +4,9 @@ import { pool } from '../config/db.js';
 import { setAuthCookie, clearAuthCookie } from '../utils/cookies.js';
 import { runPostLoginNotifications } from '../services/notificationService.js';
 
+// TEST: unit tests — signup validation (email/password/name), duplicate email 409, bcrypt hash, studentProfiles row.
+// TEST: integration — POST /api/auth/signup with rate limit + express-validator chain.
+
 export function createAuthController({ jwtSecret, jwtExpiresIn, nodeEnv }) {
   return {
     async signup(req, res) {
@@ -76,6 +79,7 @@ export function createAuthController({ jwtSecret, jwtExpiresIn, nodeEnv }) {
       }
     },
 
+    // TEST: unit tests — login wrong password 401, correct password sets cookie + JWT payload.
     async login(req, res) {
       try {
         const { email, password } = req.body || {};

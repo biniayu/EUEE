@@ -1,13 +1,18 @@
-import { useCallback, useEffect, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useChatbotPageContext } from '../components/chatbot/ChatbotContext.jsx';
 import LearningLayout from '../components/learning/LearningLayout.jsx';
 import RangeSelector from '../components/analytics/RangeSelector.jsx';
 import MetricGrid from '../components/analytics/MetricGrid.jsx';
-import AnalyticsCharts from '../components/analytics/AnalyticsCharts.jsx';
 import WeakAreasList from '../components/analytics/WeakAreasList.jsx';
 import RecentTestsTable from '../components/analytics/RecentTestsTable.jsx';
 import PredictionCard from '../components/analytics/PredictionCard.jsx';
+import Skeleton from '../components/ui/Skeleton.jsx';
+import ApiErrorAlert from '../components/ui/ApiErrorAlert.jsx';
+import { linkBack, pageSection } from '../components/ui/designTokens.js';
+
+/* Phase 14: Lazy-load Chart.js bundle only when analytics data is shown. */
+const AnalyticsCharts = lazy(() => import('../components/analytics/AnalyticsCharts.jsx'));
 
 async function fetchJson(path) {
   const res = await fetch(path, { credentials: 'include' });
@@ -48,10 +53,10 @@ export default function Analytics() {
 
   return (
     <LearningLayout title="Performance analytics">
-      <div className="mx-auto max-w-6xl space-y-8">
+      <div className={pageSection}>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <Link to="/dashboard" className="text-sm font-semibold text-brand-emerald hover:text-deep-blue">
+            <Link to="/dashboard" className={linkBack}>
               ← Dashboard
             </Link>
             <p className="mt-2 text-sm text-neutral-600">
@@ -62,25 +67,18 @@ export default function Analytics() {
         </div>
 
         {loading && (
-          <div className="space-y-4">
-            <div className="h-28 animate-pulse rounded-2xl bg-neutral-100" />
-            <div className="h-80 animate-pulse rounded-2xl bg-neutral-100" />
+          <div className="space-y-4" aria-busy="true">
+            <Skeleton height="h-28" />
+            <Skeleton height="h-80" />
           </div>
         )}
 
-        {error && (
-          <div className="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-red-800">
-            <p className="font-semibold">Could not load analytics</p>
-            <p className="mt-1 text-sm">{error}</p>
-            <button
-              type="button"
-              onClick={load}
-              className="mt-4 rounded-full bg-deep-blue px-4 py-2 text-sm font-semibold text-white"
-            >
-              Retry
-            </button>
-          </div>
-        )}
+        <ApiErrorAlert
+          title="Could not load analytics"
+          message={error}
+          onRetry={load}
+          retryLabel="Retry"
+        />
 
         {!loading && !error && payload && (
           <>
@@ -90,7 +88,16 @@ export default function Analytics() {
               </p>
             </div>
             <MetricGrid metrics={payload.metrics} />
-            <AnalyticsCharts charts={payload.charts} />
+            <Suspense
+              fallback={
+                <div className="space-y-4" aria-hidden>
+                  <Skeleton height="h-64" />
+                  <Skeleton height="h-48" />
+                </div>
+              }
+            >
+              <AnalyticsCharts charts={payload.charts} />
+            </Suspense>
             <div className="grid gap-6 lg:grid-cols-2">
               <WeakAreasList items={payload.weakAreas} />
               <RecentTestsTable items={payload.recentTests} />

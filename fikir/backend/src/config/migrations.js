@@ -667,6 +667,26 @@ async function migrateResourcesPhase13() {
   `);
 }
 
+/** Phase 14 — query performance (list/analytics-style reads) */
+async function migratePhase14Indexes() {
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS idx_question_attempts_user_attempted
+    ON question_attempts (user_id, attempted_at DESC);
+  `);
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS idx_notifications_user_created
+    ON notifications (user_id, created_at DESC);
+  `);
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS idx_lesson_progress_user_completed
+    ON lesson_progress (user_id, completed);
+  `);
+  await pool.query(`
+    CREATE INDEX IF NOT EXISTS idx_study_materials_user_uploaded
+    ON study_materials (user_id, uploaded_at DESC);
+  `);
+}
+
 /** Phase 11 — question bank favorites */
 async function migrateQuestionBankPhase11() {
   await pool.query(`
@@ -713,6 +733,7 @@ export async function runMigrations() {
   await migrateQuestionBankPhase11();
   await migrateNotificationsPhase12();
   await migrateResourcesPhase13();
+  await migratePhase14Indexes();
   await seedSubjects();
   await seedQuestions();
   await seedLessons();

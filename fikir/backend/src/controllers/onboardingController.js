@@ -1,6 +1,8 @@
 import { pool } from '../config/db.js';
 import { ensureStudentProfile } from '../utils/studentProfile.js';
 
+// TEST: profile → preferences → diagnostic (30 answers) → complete; status transitions on studentProfiles.
+
 export function createOnboardingController() {
   return {
     async status(req, res) {

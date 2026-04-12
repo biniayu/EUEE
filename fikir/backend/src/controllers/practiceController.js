@@ -1,6 +1,8 @@
 import { pool } from '../config/db.js';
 import { runAfterPracticeSessionComplete } from '../services/notificationService.js';
 
+// TEST: practice flow — startPractice (subject/topic/mock), submitAnswer adaptive meta, completePractice scoring + weak_areas.
+
 const SUBJECT_NAMES = ['Mathematics', 'Physics', 'Chemistry', 'Biology', 'English', 'SAT'];
 const DIFF_ORDER = ['easy', 'medium', 'hard'];
 const DEFAULT_TARGET = 15;

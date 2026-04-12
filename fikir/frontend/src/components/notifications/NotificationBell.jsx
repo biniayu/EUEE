@@ -74,6 +74,15 @@ export default function NotificationBell({ pollMs = 45000, initialUnread = null 
     return () => document.removeEventListener('mousedown', onDoc);
   }, []);
 
+  useEffect(() => {
+    if (!open) return undefined;
+    function onKey(e) {
+      if (e.key === 'Escape') setOpen(false);
+    }
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [open]);
+
   async function markRead(id) {
     try {
       await apiJson(`/api/notifications/${id}/read`, { method: 'POST', body: '{}' });
@@ -98,10 +107,13 @@ export default function NotificationBell({ pollMs = 45000, initialUnread = null 
     <div className="relative" ref={wrapRef}>
       <button
         type="button"
+        id="notifications-menu-button"
         onClick={() => setOpen((o) => !o)}
-        className="relative rounded-full border border-neutral-200 p-2 text-neutral-600 transition hover:bg-neutral-50 hover:text-deep-blue"
+        className="relative rounded-full border border-neutral-200 p-2 text-neutral-600 transition hover:bg-neutral-50 hover:text-deep-blue focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-emerald focus-visible:ring-offset-2"
         aria-expanded={open}
-        aria-label="Notifications"
+        aria-haspopup="true"
+        aria-controls="notifications-menu-panel"
+        aria-label={unread > 0 ? `Notifications, ${unread} unread` : 'Notifications'}
       >
         <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -119,7 +131,12 @@ export default function NotificationBell({ pollMs = 45000, initialUnread = null 
       </button>
 
       {open && (
-        <div className="absolute right-0 z-50 mt-2 w-[min(100vw-2rem,22rem)] max-h-[min(70vh,24rem)] overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-2xl ring-1 ring-black/5">
+        <div
+          id="notifications-menu-panel"
+          role="menu"
+          aria-labelledby="notifications-menu-button"
+          className="absolute right-0 z-50 mt-2 w-[min(100vw-2rem,22rem)] max-h-[min(70vh,24rem)] overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-2xl ring-1 ring-black/5 transition-opacity duration-200"
+        >
           <div className="flex items-center justify-between border-b border-neutral-100 bg-deep-blue px-3 py-2.5 text-white">
             <p className="text-sm font-bold">Notifications</p>
             {unread > 0 && (

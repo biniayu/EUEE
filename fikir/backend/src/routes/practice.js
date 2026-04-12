@@ -1,5 +1,11 @@
 import { Router } from 'express';
 import { requireAuth } from '../middleware/authMiddleware.js';
+import {
+  handleValidation,
+  practiceCompleteRules,
+  practiceStartRules,
+  practiceSubmitAnswerRules,
+} from '../middleware/validate.js';
 import * as practiceController from '../controllers/practiceController.js';
 
 export function createPracticeRouter() {
@@ -17,8 +23,14 @@ export function createPracticeRouter() {
     };
     return practiceController.startPractice(req, res);
   });
-  router.post('/start', (req, res) => practiceController.startPractice(req, res));
-  router.post('/submit-answer', (req, res) => practiceController.submitAnswer(req, res));
-  router.post('/complete', (req, res) => practiceController.completePractice(req, res));
+  router.post('/start', practiceStartRules, handleValidation, (req, res) =>
+    practiceController.startPractice(req, res)
+  );
+  router.post('/submit-answer', practiceSubmitAnswerRules, handleValidation, (req, res) =>
+    practiceController.submitAnswer(req, res)
+  );
+  router.post('/complete', practiceCompleteRules, handleValidation, (req, res) =>
+    practiceController.completePractice(req, res)
+  );
   return router;
 }

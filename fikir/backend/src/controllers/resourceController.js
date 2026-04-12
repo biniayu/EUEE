@@ -1,5 +1,7 @@
 import multer from 'multer';
 import { pool } from '../config/db.js';
+
+// TEST: postUpload Cloudinary + DB row; putResourceSubject ownership; multer size/mime errors.
 import { cloudinary, isCloudinaryConfigured, configureCloudinary } from '../config/cloudinary.js';
 
 const MAX_BYTES = 10 * 1024 * 1024;

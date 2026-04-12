@@ -1,5 +1,7 @@
 import { pool } from '../config/db.js';
 
+// TEST: generateStudyPlan — Groq JSON parse, task normalization, DB transaction; completeTask ownership.
+
 const GROQ_CHAT_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 const VALID_DAYS = [
