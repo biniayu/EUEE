@@ -196,7 +196,8 @@ export default function TutorChatbot() {
             {pageContext.type === 'question_bank' && 'Question bank'}
             {pageContext.type === 'past_papers' && 'Past papers'}
             {pageContext.type === 'notifications' && 'Notifications'}
-            {!['lesson', 'subject', 'subjects', 'dashboard', 'practice', 'analytics', 'study_plan', 'question_bank', 'past_papers', 'notifications'].includes(
+            {pageContext.type === 'resources' && 'Materials & resources'}
+            {!['lesson', 'subject', 'subjects', 'dashboard', 'practice', 'analytics', 'study_plan', 'question_bank', 'past_papers', 'notifications', 'resources'].includes(
               pageContext.type
             ) && JSON.stringify(pageContext)}
           </div>

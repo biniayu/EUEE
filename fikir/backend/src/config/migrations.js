@@ -656,6 +656,17 @@ async function migrateNotificationsPhase12() {
   `);
 }
 
+/** Phase 13 — study materials Cloudinary metadata */
+async function migrateResourcesPhase13() {
+  await pool.query(`
+    ALTER TABLE study_materials
+      ADD COLUMN IF NOT EXISTS cloudinary_public_id VARCHAR(500),
+      ADD COLUMN IF NOT EXISTS cloudinary_resource_type VARCHAR(32),
+      ADD COLUMN IF NOT EXISTS mime_type VARCHAR(120),
+      ADD COLUMN IF NOT EXISTS file_bytes INTEGER;
+  `);
+}
+
 /** Phase 11 — question bank favorites */
 async function migrateQuestionBankPhase11() {
   await pool.query(`
@@ -701,6 +712,7 @@ export async function runMigrations() {
   await migrateStudyPlanPhase10();
   await migrateQuestionBankPhase11();
   await migrateNotificationsPhase12();
+  await migrateResourcesPhase13();
   await seedSubjects();
   await seedQuestions();
   await seedLessons();
