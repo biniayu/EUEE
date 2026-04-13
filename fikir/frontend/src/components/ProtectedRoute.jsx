@@ -2,18 +2,18 @@ import { useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import useAuth from '../hooks/useAuth.js';
 
-export default function ProtectedRoute({ children }) {
+export default function ProtectedRoute({ children, requireOnboarding = true }) {
   const { fetchMe } = useAuth();
   const [checking, setChecking] = useState(true);
-  const [allowed, setAllowed] = useState(false);
+  const [user, setUser] = useState(null);
   const location = useLocation();
 
   useEffect(() => {
     let active = true;
     (async () => {
-      const user = await fetchMe();
+      const currentUser = await fetchMe();
       if (!active) return;
-      setAllowed(Boolean(user));
+      setUser(currentUser);
       setChecking(false);
     })();
     return () => {
@@ -31,8 +31,16 @@ export default function ProtectedRoute({ children }) {
     );
   }
 
-  if (!allowed) {
+  if (!user) {
     return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  }
+
+  if (requireOnboarding && user.onboardingStatus !== 'completed') {
+    return <Navigate to="/onboarding" replace />;
+  }
+
+  if (!requireOnboarding && user.onboardingStatus === 'completed' && location.pathname === '/onboarding') {
+    return <Navigate to="/dashboard" replace />;
   }
 
   return children;

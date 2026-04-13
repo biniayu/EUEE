@@ -49,6 +49,7 @@ export default function Onboarding() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [saving, setSaving] = useState(false);
+  const [completing, setCompleting] = useState(false);
   const [error, setError] = useState('');
   const [statusMessage, setStatusMessage] = useState('');
   const [analysis, setAnalysis] = useState(null);
@@ -142,16 +143,18 @@ export default function Onboarding() {
   async function completeOnboarding() {
     setError('');
     setStatusMessage('');
-    setSaving(true);
+    setCompleting(true);
     try {
       const completeRes = await apiCall('/api/onboarding/complete', 'POST', {});
       setStudyPlan(completeRes.studyPlan);
-      setStatusMessage(completeRes.message || 'Onboarding completed!');
-      setTimeout(() => navigate('/dashboard'), 900);
+      setStatusMessage(
+        completeRes.message || 'Great work! Your profile and study plan are ready. Redirecting to dashboard...'
+      );
+      navigate('/dashboard', { replace: true });
     } catch (err) {
       setError(err.message);
     } finally {
-      setSaving(false);
+      setCompleting(false);
     }
   }
 
@@ -355,8 +358,10 @@ export default function Onboarding() {
 
           {step === 6 && (
             <section className="text-center">
-              <h2 className="text-3xl font-extrabold text-deep-blue">Onboarding completed!</h2>
-              <p className="mt-3 text-neutral-600">Your profile, diagnostic, and initial plan are now saved.</p>
+              <h2 className="text-3xl font-extrabold text-deep-blue">Ready to Start Learning?</h2>
+              <p className="mt-3 text-neutral-600">
+                Your profile and study plan are ready. Click below to enter the app.
+              </p>
               {studyPlan && (
                 <div className="mt-5 rounded-xl border border-neutral-200 bg-neutral-50 p-4 text-left">
                   <p className="font-semibold text-neutral-800">Plan highlights</p>
@@ -368,11 +373,14 @@ export default function Onboarding() {
               <button
                 type="button"
                 onClick={completeOnboarding}
-                disabled={saving}
+                disabled={saving || completing}
                 className="mt-6 rounded-full bg-deep-blue px-7 py-3 text-sm font-semibold text-white transition hover:bg-[#0a2b52] disabled:opacity-60"
               >
-                {saving ? 'Finishing...' : 'Go to Dashboard'}
+                {completing ? 'Finalizing your setup...' : 'Go to Dashboard'}
               </button>
+              {completing && (
+                <p className="mt-3 text-sm text-neutral-500">Please wait while we complete your onboarding.</p>
+              )}
             </section>
           )}
         </div>

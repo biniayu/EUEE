@@ -45,7 +45,7 @@ export default function App() {
             <Route
               path="/onboarding"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute requireOnboarding={false}>
                   <Onboarding />
                 </ProtectedRoute>
               }

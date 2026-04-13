@@ -228,7 +228,8 @@ export function createOnboardingController() {
 
         return res.json({
           success: true,
-          message: 'Onboarding completed!',
+          message: 'Your profile and study plan are ready. Welcome to your dashboard!',
+          onboardingStatus: 'completed',
           studyPlan,
         });
       } catch (err) {

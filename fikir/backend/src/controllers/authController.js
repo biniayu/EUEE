@@ -93,7 +93,22 @@ export function createAuthController({ jwtSecret, jwtExpiresIn, nodeEnv }) {
         }
 
         const result = await pool.query(
-          `SELECT id, email, password, name, gradeLevel, stream, targetUniversity, weakSubjects FROM users WHERE email = $1 LIMIT 1`,
+          `
+            SELECT
+              u.id,
+              u.email,
+              u.password,
+              u.name,
+              u.gradeLevel,
+              u.stream,
+              u.targetUniversity,
+              u.weakSubjects,
+              COALESCE(sp.onboarding_status, 'pending') AS onboarding_status
+            FROM users u
+            LEFT JOIN studentProfiles sp ON sp.user_id = u.id
+            WHERE u.email = $1
+            LIMIT 1
+          `,
           [safeEmail]
         );
 
@@ -130,6 +145,7 @@ export function createAuthController({ jwtSecret, jwtExpiresIn, nodeEnv }) {
             stream: user.stream,
             targetUniversity: user.targetuniversity,
             weakSubjects: user.weaksubjects,
+            onboardingStatus: user.onboarding_status,
           },
           token,
         });
@@ -153,7 +169,7 @@ export function createAuthController({ jwtSecret, jwtExpiresIn, nodeEnv }) {
               u.targetUniversity,
               u.weakSubjects,
               sp.preferences,
-              sp.onboarding_status,
+              COALESCE(sp.onboarding_status, 'pending') AS onboarding_status,
               sp.primary_subject_id,
               sp.active_study_plan_id
             FROM users u

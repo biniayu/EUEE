@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useChatbotPageContext } from '../components/chatbot/ChatbotContext.jsx';
-import PracticeLayout from '../components/practice/PracticeLayout.jsx';
+import LearningLayout from '../components/learning/LearningLayout.jsx';
 import ModeSelection from '../components/practice/ModeSelection.jsx';
 import TestRunner from '../components/practice/TestRunner.jsx';
 import ResultsPanel from '../components/practice/ResultsPanel.jsx';
@@ -225,37 +225,42 @@ export default function PracticeTest() {
 
   if (screen === 'results' && results) {
     return (
-      <PracticeLayout title="Practice results" subtitle="Adaptive session summary">
-        <ResultsPanel
-          results={results}
-          onPracticeAgain={() => {
-            setResults(null);
-            resetSelection();
-            setScreen('select');
-          }}
-        />
-      </PracticeLayout>
+      <LearningLayout title="Practice results">
+        <div className="mx-auto w-full max-w-4xl">
+          <p className="mb-4 text-sm text-neutral-600">Adaptive session summary</p>
+          <ResultsPanel
+            results={results}
+            onPracticeAgain={() => {
+              setResults(null);
+              resetSelection();
+              setScreen('select');
+            }}
+          />
+        </div>
+      </LearningLayout>
     );
   }
 
   return (
-    <PracticeLayout
-      title="Practice test"
-      subtitle="Exam-style flow with adaptive difficulty — stay focused."
-    >
-      <ModeSelection
-        activeMode={activeMode}
-        setActiveMode={setActiveMode}
-        subjects={subjects}
-        subjectId={subjectId}
-        setSubjectId={setSubjectId}
-        topics={topics}
-        topic={topic}
-        setTopic={setTopic}
-        onStart={startSession}
-        busy={loading}
-        error={bootError}
-      />
-    </PracticeLayout>
+    <LearningLayout title="Practice test">
+      <div className="mx-auto w-full max-w-4xl">
+        <p className="mb-4 text-sm text-neutral-600">
+          Exam-style flow with adaptive difficulty - stay focused.
+        </p>
+        <ModeSelection
+          activeMode={activeMode}
+          setActiveMode={setActiveMode}
+          subjects={subjects}
+          subjectId={subjectId}
+          setSubjectId={setSubjectId}
+          topics={topics}
+          topic={topic}
+          setTopic={setTopic}
+          onStart={startSession}
+          busy={loading}
+          error={bootError}
+        />
+      </div>
+    </LearningLayout>
   );
 }
