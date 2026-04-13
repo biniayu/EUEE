@@ -60,7 +60,10 @@ export default function Signup() {
 
         <button
           type="button"
-          className="mt-10 flex w-full items-center justify-center gap-3 rounded-full border border-neutral-200 bg-white py-3 text-sm font-medium text-neutral-800 shadow-sm transition hover:bg-neutral-50"
+          disabled
+          title="Google sign-in coming soon"
+          aria-label="Google sign-in coming soon"
+          className="mt-10 flex w-full cursor-not-allowed items-center justify-center gap-3 rounded-full border border-neutral-200 bg-neutral-100 py-3 text-sm font-medium text-neutral-500 shadow-sm"
         >
           <svg className="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
             <path
@@ -80,7 +83,7 @@ export default function Signup() {
               d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
             />
           </svg>
-          Sign up with Google
+          Sign up with Google (coming soon)
         </button>
 
         <div className="relative my-8">

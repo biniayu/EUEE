@@ -6,6 +6,8 @@ import PlanSummaryStrip from '../components/studyplan/PlanSummaryStrip.jsx';
 import GeneratePlanPanel from '../components/studyplan/GeneratePlanPanel.jsx';
 import WeekCalendar from '../components/studyplan/WeekCalendar.jsx';
 import TaskSwapBar from '../components/studyplan/TaskSwapBar.jsx';
+import ApiErrorAlert from '../components/ui/ApiErrorAlert.jsx';
+import Skeleton from '../components/ui/Skeleton.jsx';
 
 async function apiJson(url, options = {}) {
   const res = await fetch(url, {
@@ -163,25 +165,13 @@ export default function StudyPlan() {
         </div>
 
         {loading && (
-          <div className="space-y-4">
-            <div className="h-24 animate-pulse rounded-2xl bg-neutral-100" />
-            <div className="h-64 animate-pulse rounded-2xl bg-neutral-100" />
+          <div className="space-y-4" aria-busy="true">
+            <Skeleton height="h-24" className="w-full" />
+            <Skeleton height="h-64" className="w-full" />
           </div>
         )}
 
-        {error && (
-          <div className="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-red-800">
-            <p className="font-semibold">Something went wrong</p>
-            <p className="mt-1 text-sm">{error}</p>
-            <button
-              type="button"
-              onClick={load}
-              className="mt-4 rounded-full bg-deep-blue px-4 py-2 text-sm font-semibold text-white"
-            >
-              Retry
-            </button>
-          </div>
-        )}
+        <ApiErrorAlert title="Could not load study plan" message={error} onRetry={load} retryLabel="Retry" />
 
         {!loading && payload && (
           <>

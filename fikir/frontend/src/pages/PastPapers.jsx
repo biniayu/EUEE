@@ -21,15 +21,25 @@ export default function PastPapers() {
         </Link>
 
         <div className="rounded-3xl border border-amber-200/80 bg-gradient-to-br from-white via-amber-50/40 to-brand-emerald/5 p-8 shadow-sm">
+          <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-emerald/10 text-brand-emerald ring-1 ring-brand-emerald/25">
+            <svg className="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 4.5h8a3 3 0 013 3V19.5a1.5 1.5 0 01-2.25 1.299L10 18.25l-4.75 2.549A1.5 1.5 0 013 19.5V7.5a3 3 0 013-3z"
+              />
+            </svg>
+          </div>
           <h1 className="text-2xl font-bold text-deep-blue">Past papers</h1>
           <p className="mt-4 text-base leading-relaxed text-neutral-700">
-            Full past papers upload is <span className="font-semibold text-amber-700">coming soon</span>. You will
-            be able to sit timed PDF-style sessions with automatic scoring where rubrics allow.
+            EUEE Past Papers will be available soon. For now, use the Question Bank for extensive practice.
           </p>
-          <p className="mt-4 text-sm text-neutral-600">
-            Until then, use the <Link className="font-semibold text-brand-emerald underline" to="/question-bank">Question bank</Link> for
-            authentic multiple-choice practice and instant explanations.
-          </p>
+          <Link
+            to="/question-bank"
+            className="mt-6 inline-flex items-center justify-center rounded-full bg-deep-blue px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#0a2b52]"
+          >
+            Go to Question Bank
+          </Link>
         </div>
 
         <section>

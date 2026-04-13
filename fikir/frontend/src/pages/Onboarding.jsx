@@ -7,7 +7,7 @@ const SUBJECTS = [
   'Chemistry',
   'Biology',
   'English',
-  'Scholastic Aptitude Test (SAT)',
+  'SAT',
 ];
 
 const DIAGNOSTIC_QUESTIONS = [
@@ -36,11 +36,11 @@ const DIAGNOSTIC_QUESTIONS = [
   { id: 'e3', subject: 'English', question: 'Antonym of "increase"?', options: ['reduce', 'extend', 'improve', 'expand'], correctIndex: 0 },
   { id: 'e4', subject: 'English', question: 'Correct punctuation: "Hello___"', options: [',', ':', '!', ';'], correctIndex: 2 },
   { id: 'e5', subject: 'English', question: 'Identify noun in "Students study daily."', options: ['study', 'daily', 'students', 'none'], correctIndex: 2 },
-  { id: 's1', subject: 'Scholastic Aptitude Test (SAT)', question: 'If all A are B and all B are C, then all A are?', options: ['A', 'B', 'C', 'none'], correctIndex: 2 },
-  { id: 's2', subject: 'Scholastic Aptitude Test (SAT)', question: 'Next: 2, 4, 8, 16, ?', options: ['18', '24', '32', '64'], correctIndex: 2 },
-  { id: 's3', subject: 'Scholastic Aptitude Test (SAT)', question: 'Odd one out: Apple, Banana, Carrot, Mango', options: ['Apple', 'Banana', 'Carrot', 'Mango'], correctIndex: 2 },
-  { id: 's4', subject: 'Scholastic Aptitude Test (SAT)', question: 'If 5 pens cost 50 birr, 1 pen costs?', options: ['5', '10', '15', '20'], correctIndex: 1 },
-  { id: 's5', subject: 'Scholastic Aptitude Test (SAT)', question: 'Which is largest?', options: ['0.9', '0.89', '0.099', '0.909'], correctIndex: 3 },
+  { id: 's1', subject: 'SAT', question: 'If all A are B and all B are C, then all A are?', options: ['A', 'B', 'C', 'none'], correctIndex: 2 },
+  { id: 's2', subject: 'SAT', question: 'Next: 2, 4, 8, 16, ?', options: ['18', '24', '32', '64'], correctIndex: 2 },
+  { id: 's3', subject: 'SAT', question: 'Odd one out: Apple, Banana, Carrot, Mango', options: ['Apple', 'Banana', 'Carrot', 'Mango'], correctIndex: 2 },
+  { id: 's4', subject: 'SAT', question: 'If 5 pens cost 50 birr, 1 pen costs?', options: ['5', '10', '15', '20'], correctIndex: 1 },
+  { id: 's5', subject: 'SAT', question: 'Which is largest?', options: ['0.9', '0.89', '0.099', '0.909'], correctIndex: 3 },
 ];
 
 const TOTAL_STEPS = 6;

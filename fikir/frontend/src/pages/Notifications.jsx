@@ -4,6 +4,8 @@ import { useChatbotPageContext } from '../components/chatbot/ChatbotContext.jsx'
 import LearningLayout from '../components/learning/LearningLayout.jsx';
 import { formatTimeAgo } from '../components/notifications/timeAgo.js';
 import { badgeClasses, labelForType } from '../components/notifications/typeStyles.js';
+import ApiErrorAlert from '../components/ui/ApiErrorAlert.jsx';
+import Skeleton from '../components/ui/Skeleton.jsx';
 
 async function apiJson(url, options = {}) {
   const res = await fetch(url, {
@@ -87,10 +89,8 @@ export default function Notifications() {
           )}
         </div>
 
-        {loading && <div className="h-40 animate-pulse rounded-2xl bg-neutral-100" />}
-        {error && (
-          <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{error}</div>
-        )}
+        {loading && <Skeleton height="h-40" className="w-full" />}
+        <ApiErrorAlert title="Could not load notifications" message={error} onRetry={load} retryLabel="Retry" />
 
         {!loading && !error && items.length === 0 && (
           <div className="rounded-2xl border border-dashed border-neutral-300 bg-white/70 px-6 py-12 text-center text-sm text-neutral-600">
